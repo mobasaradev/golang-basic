@@ -36,7 +36,7 @@ This repository contains my learning journey with Go Lang, covering various fund
 ## Project: Ticket Booking System
 
 ### Overview
-This project is a basic ticket booking implemented in Go Lang to demonstrate the application of the topics covered. It features an interactive command-line interface for booking and managing tickets.
+This project is a cli ticket booking application implemented in Go Lang to demonstrate the application of the topics covered. It features an interactive command-line interface for booking and managing tickets.
 
 ### Features
 - Valid User Input

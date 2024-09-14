@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 type UserData struct {
@@ -31,6 +32,7 @@ func main() {
 		if isValidName && isValidEmail && isValidSeatsNum {
 			// booked tickets
 			bookedTicket(firstName, lastName, email, userTickets)
+			go sendTicket(firstName, lastName, email, userTickets)
 			// stop selling tickets if remaining ticket is 0
 			if remainingTickets == 0 {
 				fmt.Println("We're Sold Out")
@@ -72,6 +74,14 @@ func getUserInput() (string, string, string, int) {
 	return firstName, lastName, email, userTickets
 }
 
+// valid the user input
+func validUserInput(firstName, lastName, email string, remainingTickets, userTickets int) (bool, bool, bool) {
+	isValidName := len(firstName) >= 2 && len(lastName) >= 2
+	isValidEmail := strings.Contains(email, "@")
+	isValidSeatsNum := userTickets > 0 && remainingTickets >= userTickets
+	return isValidEmail, isValidName, isValidSeatsNum
+}
+
 func bookedTicket(firstName, lastName, email string, userTickets int) {
 	// check remaining tickets
 	remainingTickets = remainingTickets - userTickets
@@ -88,10 +98,10 @@ func bookedTicket(firstName, lastName, email string, userTickets int) {
 	fmt.Printf("list of users name : %v\nRemaining tickets number : %v\n", bookings, remainingTickets)
 }
 
-// valid the user input
-func validUserInput(firstName, lastName, email string, remainingTickets, userTickets int) (bool, bool, bool) {
-	isValidName := len(firstName) >= 2 && len(lastName) >= 2
-	isValidEmail := strings.Contains(email, "@")
-	isValidSeatsNum := userTickets > 0 && remainingTickets >= userTickets
-	return isValidEmail, isValidName, isValidSeatsNum
+func sendTicket(firstName, lastName, email string, userTickets int)  {
+	time.Sleep(20 * time.Second)
+	var ticket = fmt.Sprintf("%v Tickets for %v %v \n", userTickets, firstName, lastName)
+	fmt.Println("*************")
+	fmt.Printf("Sending ticket : %v \nto email address%v :\n", ticket, email)
+	fmt.Println("*************")
 }
