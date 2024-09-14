@@ -2,11 +2,18 @@ package main
 
 import (
 	"fmt"
-	userValidation "go-sara/user-validation"
+	"strings"
 )
 
+type UserData struct {
+	firstName       string
+	lastName        string
+	email           string
+	numberOfTickets int
+}
+
 var orgName string = "GoLang Org"
-var users []string
+var bookings = make([]UserData, 0)
 
 const totalTickets int = 50
 
@@ -19,11 +26,11 @@ func main() {
 		// User input
 		firstName, lastName, email, userTickets := getUserInput()
 		// user input validation
-		isValidName, isValidEmail, isValidSeatsNum := userValidation.ValidUserInput(firstName, lastName, email, remainingTickets, userTickets)
+		isValidName, isValidEmail, isValidSeatsNum := validUserInput(firstName, lastName, email, remainingTickets, userTickets)
 
 		if isValidName && isValidEmail && isValidSeatsNum {
 			// booked tickets
-			bookedTicket(firstName, email, userTickets)
+			bookedTicket(firstName, lastName, email, userTickets)
 			// stop selling tickets if remaining ticket is 0
 			if remainingTickets == 0 {
 				fmt.Println("We're Sold Out")
@@ -48,8 +55,6 @@ func greeting() {
 	fmt.Printf("We've %v tickets. Available tickets : %v\n", totalTickets, remainingTickets)
 }
 
-
-
 func getUserInput() (string, string, string, int) {
 	var firstName, lastName, email string
 	var userTickets int
@@ -67,13 +72,26 @@ func getUserInput() (string, string, string, int) {
 	return firstName, lastName, email, userTickets
 }
 
-func bookedTicket(firstName, email string, userTickets int,) {
-	// list of user - append func for add data in a array for array or slices.
-	users = append(users, firstName)
+func bookedTicket(firstName, lastName, email string, userTickets int) {
 	// check remaining tickets
 	remainingTickets = remainingTickets - userTickets
-
+	userData := UserData{
+		firstName:       firstName,
+		lastName:        lastName,
+		email:           email,
+		numberOfTickets: userTickets,
+	}
+	// list of user - append func for add data in a array for array or slices.
+	bookings = append(bookings, userData)
 	// congratulation msg to user
 	fmt.Printf("Thank you %v for collecting %v tickets. we'll contact you in %v.\n", firstName, userTickets, email)
-	fmt.Printf("list of users name : %v\nRemaining tickets number : %v\n", users, remainingTickets)
+	fmt.Printf("list of users name : %v\nRemaining tickets number : %v\n", bookings, remainingTickets)
+}
+
+// valid the user input
+func validUserInput(firstName, lastName, email string, remainingTickets, userTickets int) (bool, bool, bool) {
+	isValidName := len(firstName) >= 2 && len(lastName) >= 2
+	isValidEmail := strings.Contains(email, "@")
+	isValidSeatsNum := userTickets > 0 && remainingTickets >= userTickets
+	return isValidEmail, isValidName, isValidSeatsNum
 }
